@@ -2,12 +2,12 @@ package com.lab.labschooldemo.service;
 
 import com.lab.labschooldemo.converter.SchoolConverter;
 import com.lab.labschooldemo.dto.request.SchoolRequest;
-import com.lab.labschooldemo.dto.response.SchoolCreateResponse;
+import com.lab.labschooldemo.dto.response.SchoolResponse;
 import com.lab.labschooldemo.exception.SchoolAlreadyExistsException;
+import com.lab.labschooldemo.exception.SchoolNotFoundException;
 import com.lab.labschooldemo.model.School;
 import com.lab.labschooldemo.repository.SchoolRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class SchoolService {
   private final SchoolRepository schoolRepository;
 
-  public SchoolCreateResponse createSchool(SchoolRequest request) {
+  public SchoolResponse createSchool(SchoolRequest request) {
     Optional<School> schoolByName=schoolRepository.findBySchoolName(request.getSchoolName());
     if (schoolByName.isPresent()){
   throw new SchoolAlreadyExistsException("School already exists with name: "+request.getSchoolName());
@@ -29,5 +29,18 @@ public class SchoolService {
 
   public void deleteSchoolById(long id) {
     schoolRepository.deleteById(id);
+  }
+
+  public SchoolResponse getSchoolByID(long id) {
+    return SchoolConverter.convertToSchoolCreateResponse(findById(id));
+  }
+  private School findById(long id){
+    return schoolRepository.findById(id).orElseThrow(() -> new SchoolNotFoundException("School not found"));
+  }
+
+  public void updateSchool(long id, SchoolRequest request) {
+  School oldSchool=findById(id);
+  oldSchool.setSchoolName(request.getSchoolName());
+  schoolRepository.save(oldSchool);
   }
 }

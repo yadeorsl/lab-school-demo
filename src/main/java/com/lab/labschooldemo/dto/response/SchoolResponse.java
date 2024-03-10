@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.util.Date;
 @Getter
 @Setter
-public class SchoolCreateResponse {
+public class SchoolResponse {
     private String schoolName;
     private Date createdDate;
 
