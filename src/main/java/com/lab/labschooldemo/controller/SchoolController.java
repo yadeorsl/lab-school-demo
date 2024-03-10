@@ -4,11 +4,14 @@ import com.lab.labschooldemo.dto.request.SchoolRequest;
 import com.lab.labschooldemo.dto.response.SchoolResponse;
 import com.lab.labschooldemo.exception.SchoolAlreadyExistsException;
 import com.lab.labschooldemo.exception.SchoolNotFoundException;
+import com.lab.labschooldemo.model.School;
 import com.lab.labschooldemo.service.SchoolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/schools")
@@ -19,6 +22,10 @@ public class SchoolController {
     @PostMapping
     public SchoolResponse createSchool(@RequestBody SchoolRequest request){
         return schoolService.createSchool(request);
+    }
+    @GetMapping
+    public List<School>  getSchool(@RequestParam(required = false) String schoolName){
+        return schoolService.getSchool(schoolName);
     }
     @GetMapping("{id}")
     public SchoolResponse getSchoolByID(@PathVariable long id){
